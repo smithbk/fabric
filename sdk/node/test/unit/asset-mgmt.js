@@ -149,7 +149,7 @@ test("Alice deploys chaincode", function (t) {
       metadata: alicesCert.encode()
     };
 
-    if (mode === 'dev') {
+    if (chain.isDevMode()) {
         // Name required for deploy in development mode
         deployRequest.chaincodeName = testChaincodeName;
     } else {
