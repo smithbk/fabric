@@ -22,8 +22,9 @@ var hfc = require('../..');
 var test = require('tape');
 var util = require('util');
 var fs = require('fs');
+var tutil = require('./test-util');
 
-var keyValStorePath = "/tmp/keyValStore"
+var keyValStorePath = "/tmp/keyValStore";
 var keyValStorePath2 = keyValStorePath + "2";
 
 //
@@ -52,12 +53,10 @@ function registrarTest(cb) {
    //
    // Create and configure the test chain
    //
-   var chain = hfc.newChain("testChain");
+   var chain = tutil.getTestChain();
    var expect="";
    var found="";
 
-   chain.setKeyValStore(hfc.newFileKeyValStore(keyValStorePath));
-   chain.setMemberServicesUrl("grpc://localhost:50051");
    chain.enroll("admin", "Xurw3yU9zI0l", function (err, admin) {
       if (err) return cb(err);
       chain.setRegistrar(admin);
@@ -71,18 +70,18 @@ function registrarTest(cb) {
                if (!err) return cb(err);
                expect="webAdmin may not register member of type auditor";
                found = (err.toString()).match(expect);
-               if (!(found==expect)) cb(err);
+               if (found !== expect) cb(err);
                registerAndEnroll("validator", "validator", null, chain, function(err, validator) {
                   if (!err) return cb(err);
                   expect="webAdmin may not register member of type validator";
                   found = (err.toString()).match(expect);
-                  if (!(found==expect)) cb(err);
+                  if (found !== expect) cb(err);
                   chain.setRegistrar(webUser);
                   registerAndEnroll("webUser2", "client", null, chain, function(err) {
                      if (!err) return cb(Error("webUser should not be allowed to register a client"));
                      expect="webUser may not register member of type client";
                      found = (err.toString()).match(expect);
-                     if (!(found==expect)) cb(err);
+                     if (found !== expect) cb(err);
                      return cb();
                   });
                });
@@ -116,9 +115,7 @@ function enrollAgain(cb) {
    // This is necessary to start without a local cache.
    //
    fs.renameSync(keyValStorePath,keyValStorePath2);
-   var chain = hfc.newChain("testChain2");
-   chain.setKeyValStore(hfc.newFileKeyValStore('/tmp/keyValStore'));
-   chain.setMemberServicesUrl("grpc://localhost:50051");
+   var chain = tutil.getTestChain("testChain2");
    chain.enroll("admin", "Xurw3yU9zI0l", function (err, admin) {
       rmdir(keyValStorePath);
       fs.renameSync(keyValStorePath2,keyValStorePath);

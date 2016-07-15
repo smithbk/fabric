@@ -22,51 +22,18 @@ var hfc = require('../..');
 var test = require('tape');
 var util = require('util');
 var fs = require('fs');
+var tutil = require('./test-util');
 
 //
 //  Create a test chain
 //
 
-var chain = hfc.newChain("testChain");
+var chain = tutil.getTestChain();
 
 var registrar = {
     name: 'WebAppAdmin',
     secret: 'DJY27pEnl16d'
 };
-
-
-//
-// Configure the test chain
-//
-// Set the directory for the local file-based key value store, point to the
-// address of the membership service, and add an associated peer node.
-//
-// If the "tlsca.cert" file exists then the client-sdk will
-// try to connect to the member services using TLS.
-// The "tlsca.cert" is supposed to contain the root certificate (in PEM format)
-// to be used to authenticate the member services certificate.
-//
-
-chain.setKeyValStore(hfc.newFileKeyValStore('/tmp/keyValStore'));
-if (fs.existsSync("tlsca.cert")) {
-    chain.setMemberServicesUrl("grpcs://localhost:50051", fs.readFileSync('tlsca.cert'));
-} else {
-    chain.setMemberServicesUrl("grpc://localhost:50051");
-}
-chain.addPeer("grpc://localhost:30303");
-
-//
-// Set the chaincode deployment mode to either developent mode (user runs chaincode)
-// or network mode (code package built and sent to the peer).
-//
-
-var mode =  process.env['DEPLOY_MODE'];
-console.log("$DEPLOY_MODE: " + mode);
-if (mode === 'dev') {
-    chain.setDevMode(true);
-} else {
-    chain.setDevMode(false);
-}
 
 //
 // Configure test users
@@ -120,8 +87,8 @@ function getUser(name, cb) {
             affiliation: "00001"
         };
         user.registerAndEnroll(registrationRequest, function (err) {
-            if (err) cb(err, null)
-            cb(null, user)
+            if (err) cb(err, null);
+            cb(null, user);
         });
     });
 }
@@ -227,10 +194,10 @@ test('Register and enroll a new user', function (t) {
             fs.exists(path, function (exists) {
                 if (exists) {
                     t.pass("Successfully stored client token" /*+ " ---> " + test_user1.name*/);
-                    t.end()
+                    t.end();
                 } else {
                     t.fail("Failed to store client token for " + test_user1.name + " ---> " + err);
-                    t.end(err)
+                    t.end(err);
                 }
             });
         }

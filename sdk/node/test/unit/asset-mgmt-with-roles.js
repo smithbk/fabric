@@ -26,6 +26,7 @@ var hfc = require('../..');
 var test = require('tape');
 var util = require('util');
 var crypto = require('../../lib/crypto');
+var tutil = require('./test-util');
 
 var chain, chaincodeID;
 var chaincodeName = "mycc3";
@@ -37,11 +38,7 @@ var devMode = process.env.DEPLOY_MODE == 'dev';
 // Create the chain and enroll users as deployer, assigner, and nonAssigner (who doesn't have privilege to assign.
 function setup(cb) {
    console.log("initializing ...");
-   var chain = hfc.newChain("testChain");
-   chain.setKeyValStore(hfc.newFileKeyValStore("/tmp/keyValStore"));
-   chain.setMemberServicesUrl("grpc://localhost:50051");
-   chain.addPeer("grpc://localhost:30303");
-   if (devMode) chain.setDevMode(true);
+   var chain = tutil.getTestChain();
    console.log("enrolling deployer ...");
    chain.enroll("WebAppAdmin", "DJY27pEnl16d", function (err, user) {
       if (err) return cb(err);
@@ -174,7 +171,7 @@ test('assign asset management with roles', function (t) {
                 });
             }
         });
-    })
+    });
 });
 
 test('not assign asset management with roles', function (t) {

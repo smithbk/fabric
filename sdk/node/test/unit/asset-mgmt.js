@@ -26,6 +26,7 @@ var hfc = require('../..');
 var test = require('tape');
 var util = require('util');
 var fs = require('fs');
+var tutil = require('./test-util');
 
 // constants
 var registrar = {
@@ -49,24 +50,7 @@ var testChaincodeID;
 //
 //  Create and configure a test chain
 //
-var chain = hfc.newChain("testChain");
-chain.setKeyValStore(hfc.newFileKeyValStore('/tmp/keyValStore'));
-chain.setMemberServicesUrl("grpc://localhost:50051");
-chain.addPeer("grpc://localhost:30303");
-
-//
-// Set the chaincode deployment mode to either developent mode (user runs chaincode)
-// or network mode (code package built and sent to the peer).
-//
-
-var mode =  process.env['DEPLOY_MODE'];
-console.log("$DEPLOY_MODE: " + mode);
-if (mode === 'dev') {
-    chain.setDevMode(true);
-} else {
-    chain.setDevMode(false);
-}
-
+var chain = tutil.getTestChain();
 
 /**
  * Get the user and if not enrolled, register and enroll the user.
@@ -82,8 +66,8 @@ function getUser(name, cb) {
             affiliation: "00001"
         };
         user.registerAndEnroll(registrationRequest, function (err) {
-            if (err) cb(err, null)
-            cb(null, user)
+            if (err) cb(err, null);
+            cb(null, user);
         });
     });
 }
@@ -120,7 +104,7 @@ test('Enroll Alice', function (t) {
             if (err) fail(t, "Failed getting Application certificate.");
             alicesCert = userCert;
             pass(t, "enroll Alice");
-        })
+        });
     });
 });
 
@@ -132,7 +116,7 @@ test('Enroll Bob', function (t) {
             if (err) fail(t, "Failed getting Application certificate.");
             bobAppCert = userCert;
             pass(t, "enroll Bob");
-        })
+        });
     });
 });
 
@@ -144,7 +128,7 @@ test('Enroll Charlie', function (t) {
             if (err) fail(t, "Failed getting Application certificate.");
             charlieAppCert = userCert;
             pass(t, "enroll Charlie");
-        })
+        });
     });
 });
 
@@ -271,7 +255,7 @@ test("Alice queries chaincode", function (t) {
         console.log(util.format('Charlie identity: %s', charlieAppCert.encode().toString('hex')));
 
         if (results.result != charlieAppCert.encode().toString('hex')) {
-            fail(t, "Charlie is not the owner of the asset.")
+            fail(t, "Charlie is not the owner of the asset.");
         }
         pass(t, "Alice query. Result: " + results);
     });
