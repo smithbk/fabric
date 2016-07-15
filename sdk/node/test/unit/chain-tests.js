@@ -221,7 +221,7 @@ test('Deploy a chaincode by enrolled user', function(t) {
     args: ["a", initA, "b", initB]
   };
 
-  if (mode === 'dev') {
+  if (chain.isDevMode()) {
       // Name required for deploy in development mode
       deployRequest.chaincodeName = testChaincodeName;
   } else {
