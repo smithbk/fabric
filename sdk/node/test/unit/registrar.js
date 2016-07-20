@@ -69,18 +69,18 @@ function registrarTest(cb) {
             registerAndEnroll("auditor", "auditor", null, chain, function(err, auditor) {
                if (!err) return cb(err);
                expect="webAdmin may not register member of type auditor";
-               found = (err.toString()).match(expect);
+               found = (err.toString()).match(expect).toString();
                if (found !== expect) cb(err);
                registerAndEnroll("validator", "validator", null, chain, function(err, validator) {
                   if (!err) return cb(err);
                   expect="webAdmin may not register member of type validator";
-                  found = (err.toString()).match(expect);
+                  found = (err.toString()).match(expect).toString();
                   if (found !== expect) cb(err);
                   chain.setRegistrar(webUser);
                   registerAndEnroll("webUser2", "client", null, chain, function(err) {
                      if (!err) return cb(Error("webUser should not be allowed to register a client"));
                      expect="webUser may not register member of type client";
-                     found = (err.toString()).match(expect);
+                     found = (err.toString()).match(expect).toString();
                      if (found !== expect) cb(err);
                      return cb();
                   });
