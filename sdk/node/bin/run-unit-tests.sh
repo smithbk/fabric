@@ -58,7 +58,7 @@ init() {
    # Clean up if anything remaining from previous run
    stopMemberServices
    stopPeer
-   rm -rf /var/hyperledger/production /tmp/keyValStore $LOGDIR
+   rm -rf /var/hyperledger/production /tmp/keyValStore* $LOGDIR
    mkdir $LOGDIR
 }
 
