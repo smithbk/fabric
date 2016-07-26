@@ -338,6 +338,7 @@ export interface DeployRequest extends TransactionRequest {
     // The name identifier for the chaincode to deploy in development mode.
     chaincodeName:string;
     // The directory on the server side, where the certificate.pem will be copied
+    certificatePath:string;
 }
 
 /**
