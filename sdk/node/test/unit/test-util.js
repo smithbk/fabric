@@ -27,17 +27,18 @@ var util = require('util');
 var fs = require('fs');
 
 function getTestChain(name) {
-   name = name | "testChain";
+   name = name || "testChain";
    var chain = hfc.newChain(name);
    chain.setKeyValStore(hfc.newFileKeyValStore('/tmp/keyValStore'));
    chain.setECDSAModeForGRPC(true);
    if (fs.existsSync("tlsca.cert")) {
       var pem = fs.readFileSync('tlsca.cert');
       chain.setMemberServicesUrl("grpcs://localhost:50051", {pem:pem, hostnameOverride:'tlsca'});
+      chain.addPeer("grpcs://localhost:30303", {pem:pem, hostnameOverride:'tlsca'});
    } else {
       chain.setMemberServicesUrl("grpc://localhost:50051");
+      chain.addPeer("grpc://localhost:30303");
    }
-   chain.addPeer("grpc://localhost:30303");
 
    //
    // Set the chaincode deployment mode to either developent mode (user runs chaincode)

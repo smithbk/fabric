@@ -194,7 +194,7 @@ export interface Enrollment {
     chainKey:string;
 }
 
-// GRPCOptions 
+// GRPCOptions
 export interface GRPCOptions {
    pem: string;
    hostnameOverride: string;
@@ -337,6 +337,7 @@ export interface DeployRequest extends TransactionRequest {
     chaincodePath:string;
     // The name identifier for the chaincode to deploy in development mode.
     chaincodeName:string;
+    // The directory on the server side, where the certificate.pem will be copied
 }
 
 /**
@@ -1584,6 +1585,12 @@ export class TransactionContext extends events.EventEmitter {
 
      	  // Substitute the hashStrHash for the image name
      	  dockerFileContents = util.format(dockerFileContents, hash);
+
+        // Add the certificate path on the server, if it is being passed in
+        if (request.certificatePath != "") {
+            dockerFileContents = dockerFileContents + "\n" + "COPY certificate.pem %s";
+            dockerFileContents = util.format(dockerFileContents, request.certificatePath);
+        }
 
      	  // Create a Docker file with dockerFileContents
      	  let dockerFilePath = projDir + "/Dockerfile";
