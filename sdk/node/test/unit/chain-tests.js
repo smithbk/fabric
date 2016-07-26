@@ -219,6 +219,8 @@ test('Deploy a chaincode by enrolled user', function(t) {
     fcn: "init",
     // Arguments to the initializing function
     args: ["a", initA, "b", initB]
+    // The directory on the server side, where the certificate.pem will be copied to
+    // certificatePath: "/root/"
   };
 
   if (chain.isDevMode()) {
