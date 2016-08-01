@@ -1265,7 +1265,7 @@ export class TransactionContext extends events.EventEmitter {
      * @param tx {Transaction} The transaction.
      */
     private execute(tx:Transaction):TransactionContext {
-        debug('Executing transaction [%j]', tx);
+        debug('Executing transaction');
 
         let self = this;
         // Get the TCert
@@ -1588,7 +1588,11 @@ export class TransactionContext extends events.EventEmitter {
      	  dockerFileContents = util.format(dockerFileContents, hash);
 
         // Add the certificate path on the server, if it is being passed in
-        if (request.certificatePath != "") {
+        debug("type of request.certificatePath: " + typeof(request.certificatePath));
+        debug("request.certificatePath: " + request.certificatePath);
+        if (request.certificatePath !== "" && request.certificatePath !== undefined) {
+            debug("Adding COPY certificate.pem command");
+
             dockerFileContents = dockerFileContents + "\n" + "COPY certificate.pem %s";
             dockerFileContents = util.format(dockerFileContents, request.certificatePath);
         }
